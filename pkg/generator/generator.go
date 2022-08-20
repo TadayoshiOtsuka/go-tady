@@ -18,7 +18,7 @@ func Do(src, rootName string) error {
 }
 
 func makeRoot(name string) error {
-	if err := os.MkdirAll(name, 0700); err != nil {
+	if err := os.MkdirAll(name, 0777); err != nil {
 		return err
 	}
 
@@ -47,7 +47,7 @@ func scan(src, dst string) error {
 }
 
 func genDir(src, dst, path string) error {
-	if err := os.MkdirAll(filepath.Join(dst, path), 0700); err != nil {
+	if err := os.MkdirAll(filepath.Join(dst, path), 0777); err != nil {
 		return err
 	}
 	subDirSrc, subDirDst := filepath.Join(src, path), filepath.Join(dst, path)
