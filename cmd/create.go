@@ -1,5 +1,5 @@
 /*
-Copyright © 2022 NAME HERE <ohtukayoshi.yoshi@gmail.com>
+Copyright © 2022 TadayoshiOtsuka <ohtukayoshi.yoshi@gmail.com>
 
 */
 package cmd
