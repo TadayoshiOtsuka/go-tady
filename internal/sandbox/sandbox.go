@@ -12,10 +12,13 @@ const src = "./templates/sandbox"
 
 func Create() error {
 	projectName := config.Config.Name
+	userName := config.Config.UserName
+	packageName := fmt.Sprintf("github.com/%v/%v", userName, projectName)
+
 	if err := generator.Do(src, projectName); err != nil {
 		return err
 	}
-	if err := gomod.Setup(projectName, fmt.Sprintf("github.com/TadayoshiOtsuka/%v", projectName)); err != nil {
+	if err := gomod.Setup(projectName, packageName); err != nil {
 		return err
 	}
 

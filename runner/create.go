@@ -10,6 +10,7 @@ import (
 )
 
 func Create() int {
+	inputUserName()
 	inputProjectName()
 	selectTemplate()
 
@@ -33,6 +34,27 @@ func inputProjectName() error {
 	}
 
 	config.Config.Name = res
+
+	return nil
+}
+
+func inputUserName() error {
+	p := promptui.Prompt{
+		Label: "Your Github user name",
+		Validate: func(in string) error {
+			if len(in) == 0 {
+				return errors.New("user name is must be not empty")
+			}
+			return nil
+		},
+	}
+
+	res, err := p.Run()
+	if err != nil {
+		return err
+	}
+
+	config.Config.UserName = res
 
 	return nil
 }
