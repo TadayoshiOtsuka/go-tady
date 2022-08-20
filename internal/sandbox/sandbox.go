@@ -8,7 +8,7 @@ import (
 	"github.com/TadayoshiOtsuka/go-tady/pkg/gomod"
 )
 
-const src = "./templates/sandbox"
+const src = "templates/sandbox"
 
 func Create() error {
 	projectName := config.Config.Name
