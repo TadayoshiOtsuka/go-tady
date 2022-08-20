@@ -1,15 +1,17 @@
 package generator
 
 import (
-	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"syscall"
+
+	"embed"
 )
 
+//go:embed templates
+var templatefs embed.FS
+
 func Do(src, rootName string) error {
-	fmt.Println("start gen")
 	defaultUmask := syscall.Umask(0)
 	defer func() {
 		syscall.Umask(defaultUmask)
@@ -33,7 +35,7 @@ func makeRoot(name string) error {
 }
 
 func scan(src, dst string) error {
-	fs, err := ioutil.ReadDir(src)
+	fs, err := templatefs.ReadDir(src)
 	if err != nil {
 		return err
 	}
@@ -68,7 +70,7 @@ func genDir(src, dst, path string) error {
 func genFile(src, dst, path string) error {
 	fileSrc := filepath.Join(src, path)
 	fileDst := filepath.Join(dst, path)
-	buf, err := ioutil.ReadFile(fileSrc)
+	buf, err := templatefs.ReadFile(fileSrc)
 	if err != nil {
 		return err
 	}
