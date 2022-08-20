@@ -4,9 +4,14 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"syscall"
 )
 
 func Do(src, rootName string) error {
+	defaultUmask := syscall.Umask(0)
+	defer func() {
+		syscall.Umask(defaultUmask)
+	}()
 	if err := makeRoot(rootName); err != nil {
 		return err
 	}
