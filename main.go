@@ -15,7 +15,9 @@ limitations under the License.
 */
 package main
 
-import "github.com/TadayoshiOtsuka/go-tady/cmd"
+import (
+	"github.com/TadayoshiOtsuka/go-tady/cmd"
+)
 
 func main() {
 	cmd.Execute()

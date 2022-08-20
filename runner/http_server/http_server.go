@@ -8,7 +8,7 @@ import (
 
 func SelectServerTemplate() {
 	p := promptui.Select{
-		Label: "Choose Create Template",
+		Label: "Select a HTTP package",
 		Items: []string{
 			"net/http",
 		},

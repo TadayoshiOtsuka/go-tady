@@ -1,11 +1,12 @@
 /*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
+Copyright © 2022 NAME HERE <ohtukayoshi.yoshi@gmail.com>
 
 */
 package cmd
 
 import (
-	"log"
+	"errors"
+	"os"
 
 	"github.com/TadayoshiOtsuka/go-tady/runner/config"
 	httpserver "github.com/TadayoshiOtsuka/go-tady/runner/http_server"
@@ -20,41 +21,45 @@ var createCmd = &cobra.Command{
 	Short: "create template",
 	Long:  "create template create template",
 	Run: func(cmd *cobra.Command, args []string) {
-		inputProjectName()
-		selectTemplate()
+		os.Exit(create())
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(createCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// createCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// createCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func inputProjectName() {
+func create() int {
+	inputProjectName()
+	selectTemplate()
+
+	return 0
+}
+
+func inputProjectName() error {
 	p := promptui.Prompt{
-		Label: "project name",
+		Label: "Project name",
+		Validate: func(in string) error {
+			if len(in) == 0 {
+				return errors.New("project name is must be not empty")
+			}
+			return nil
+		},
 	}
 
 	res, err := p.Run()
 	if err != nil {
-		log.Panicln(err)
+		return err
 	}
 
 	config.Config.Name = res
+
+	return nil
 }
 
-func selectTemplate() {
+func selectTemplate() error {
 	p := promptui.Select{
-		Label: "Choose Create Template",
+		Label: "Select a project type",
 		Items: []string{
 			"sandbox",
 			"http-server",
@@ -62,14 +67,18 @@ func selectTemplate() {
 	}
 	_, res, err := p.Run()
 	if err != nil {
-		log.Panicln(err)
+		return err
 	}
 
 	switch res {
 	case "sandbox":
-		sandbox.Create()
+		if err := sandbox.Create(); err != nil {
+			return err
+		}
 
 	case "http-server":
 		httpserver.SelectServerTemplate()
 	}
+
+	return nil
 }

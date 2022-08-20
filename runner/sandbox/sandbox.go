@@ -1,11 +1,15 @@
 package sandbox
 
 import (
-	"fmt"
-
 	"github.com/TadayoshiOtsuka/go-tady/runner/config"
+	"github.com/TadayoshiOtsuka/go-tady/runner/generator"
 )
 
-func Create() {
-	fmt.Print(config.Config.Name)
+func Create() error {
+	projectName := config.Config.Name
+	if err := generator.MakeDir(projectName); err != nil {
+		return err
+	}
+
+	return nil
 }
