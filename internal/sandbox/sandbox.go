@@ -3,9 +3,9 @@ package sandbox
 import (
 	"fmt"
 
-	"github.com/TadayoshiOtsuka/go-tady/runner/config"
-	"github.com/TadayoshiOtsuka/go-tady/runner/generator"
-	"github.com/TadayoshiOtsuka/go-tady/runner/gomod"
+	"github.com/TadayoshiOtsuka/go-tady/pkg/config"
+	"github.com/TadayoshiOtsuka/go-tady/pkg/generator"
+	"github.com/TadayoshiOtsuka/go-tady/pkg/gomod"
 )
 
 const src = "./templates/sandbox"
