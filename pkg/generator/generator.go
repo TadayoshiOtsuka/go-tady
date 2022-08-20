@@ -1,6 +1,7 @@
 package generator
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -8,6 +9,7 @@ import (
 )
 
 func Do(src, rootName string) error {
+	fmt.Println("start gen")
 	defaultUmask := syscall.Umask(0)
 	defer func() {
 		syscall.Umask(defaultUmask)
