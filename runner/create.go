@@ -2,6 +2,7 @@ package runner
 
 import (
 	"errors"
+	"fmt"
 
 	httpserver "github.com/TadayoshiOtsuka/go-tady/internal/http_server"
 	"github.com/TadayoshiOtsuka/go-tady/internal/sandbox"
@@ -75,6 +76,7 @@ func selectTemplate() error {
 	switch res {
 	case "sandbox":
 		if err := sandbox.Create(); err != nil {
+			fmt.Println(err)
 			return err
 		}
 
