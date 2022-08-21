@@ -9,7 +9,7 @@ import (
 	"embed"
 )
 
-//go:embed templates
+//go:embed all:templates
 var templateFS embed.FS
 
 func Do(src, rootName, packageName string) error {
