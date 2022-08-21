@@ -13,7 +13,7 @@ var versionCmd = &cobra.Command{
 	Long:    `version`,
 	Aliases: []string{"v"},
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("go-tady version %s", getVersion())
+		fmt.Printf("go-tady version %s\n", getVersion())
 	},
 }
 
