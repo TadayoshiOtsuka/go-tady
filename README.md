@@ -5,7 +5,7 @@ You can start the CLI and select a Go project in `/pkg/generator/templates` to g
 
 ## Install
 
-`go install github.com/TadayoshiOtsuka/go-tady@v0.0.4`
+`go install github.com/TadayoshiOtsuka/go-tady@v0.0.7`
 
 ## Usage
 
