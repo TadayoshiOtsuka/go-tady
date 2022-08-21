@@ -1,4 +1,4 @@
-package printutils
+package utils
 
 import (
 	"fmt"

@@ -1,12 +1,18 @@
 package runner
 
 import (
+	"embed"
 	"errors"
+	"fmt"
 
-	"github.com/TadayoshiOtsuka/go-tady/internal/generator"
+	"github.com/TadayoshiOtsuka/go-tady/internal/create/generator"
+	"github.com/TadayoshiOtsuka/go-tady/internal/create/generator/engine"
 	"github.com/TadayoshiOtsuka/go-tady/pkg/config"
 	"github.com/manifoldco/promptui"
 )
+
+//go:embed all:presets
+var presetFS embed.FS
 
 func Start() error {
 	if err := inputUserName(); err != nil {
@@ -15,10 +21,37 @@ func Start() error {
 	if err := inputProjectName(); err != nil {
 		return err
 	}
-	if err := selectTemplate(); err != nil {
-		return err
+	if t := selectTemplateType(); t == "user" {
+		if err := selectUserTemplate(); err != nil {
+			return err
+		}
+		e := engine.NewUserPresetEngine()
+		g := generator.NewGenerator(e)
+		// 設定ファイルから絶対パスを読み込み
+		src := fmt.Sprintf("%v%v", "presets/", config.Config.TargetTemplate)
+		if err := g.Do(src, config.Config); err != nil {
+			return err
+		}
+	} else {
+		if err := selectPresetTemplate(); err != nil {
+			return err
+		}
+		e := engine.NewPresetEngine(&presetFS)
+		g := generator.NewGenerator(e)
+		src := fmt.Sprintf("%v%v", "presets/", config.Config.TargetTemplate)
+		if err := g.Do(src, config.Config); err != nil {
+			return err
+		}
 	}
 
+	return nil
+}
+
+func selectTemplateType() string {
+	return ""
+}
+
+func selectUserTemplate() error {
 	return nil
 }
 
@@ -64,7 +97,7 @@ func inputUserName() error {
 	return nil
 }
 
-func selectTemplate() error {
+func selectPresetTemplate() error {
 	p := promptui.Select{
 		Label: "Select a project type",
 		Items: []string{
@@ -80,15 +113,9 @@ func selectTemplate() error {
 	switch res {
 	case "Sandbox":
 		config.Config.TargetTemplate = "sandbox"
-		if err := generator.Create(); err != nil {
-			return err
-		}
 
 	case "HTTP Server":
 		config.Config.TargetTemplate = "http_server/rest/nethttp"
-		if err := generator.Create(); err != nil {
-			return err
-		}
 	}
 
 	return nil
