@@ -17,7 +17,7 @@ func Create() error {
 	userName := config.Config.UserName
 	packageName := fmt.Sprintf("github.com/%v/%v", userName, projectName)
 
-	if err := generator.Do(src, projectName); err != nil {
+	if err := generator.Do(src, projectName, packageName); err != nil {
 		return err
 	}
 	fmt.Printf("%s in %d[ms]\n", "Generate Template Done.", time.Since(now).Milliseconds())
