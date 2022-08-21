@@ -4,18 +4,24 @@ import (
 	"errors"
 	"fmt"
 
-	httpserver "github.com/TadayoshiOtsuka/go-tady/internal/http_server"
-	"github.com/TadayoshiOtsuka/go-tady/internal/sandbox"
+	httpserver "github.com/TadayoshiOtsuka/go-tady/internal/create/http_server"
+	"github.com/TadayoshiOtsuka/go-tady/internal/generator"
 	"github.com/TadayoshiOtsuka/go-tady/pkg/config"
 	"github.com/manifoldco/promptui"
 )
 
-func Create() int {
-	inputUserName()
-	inputProjectName()
-	selectTemplate()
+func Start() error {
+	if err := inputUserName(); err != nil {
+		return err
+	}
+	if err := inputProjectName(); err != nil {
+		return err
+	}
+	if err := selectTemplate(); err != nil {
+		return err
+	}
 
-	return 0
+	return nil
 }
 
 func inputProjectName() error {
@@ -75,12 +81,14 @@ func selectTemplate() error {
 
 	switch res {
 	case "sandbox":
-		if err := sandbox.Create(); err != nil {
+		config.Config.TargetTemplate = "sandbox"
+		if err := generator.Create(); err != nil {
 			fmt.Println(err)
 			return err
 		}
 
 	case "http-server":
+		config.Config.TargetTemplate = "http-server"
 		httpserver.SelectServerTemplate()
 	}
 

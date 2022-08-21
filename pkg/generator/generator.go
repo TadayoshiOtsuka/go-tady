@@ -9,13 +9,11 @@ import (
 )
 
 //go:embed templates
-var templatefs embed.FS
+var templateFS embed.FS
 
 func Do(src, rootName string) error {
-	defaultUmask := syscall.Umask(0)
-	defer func() {
-		syscall.Umask(defaultUmask)
-	}()
+	umask := syscall.Umask(0)
+	defer syscall.Umask(umask)
 	if err := makeRoot(rootName); err != nil {
 		return err
 	}
@@ -35,7 +33,7 @@ func makeRoot(name string) error {
 }
 
 func scan(src, dst string) error {
-	fs, err := templatefs.ReadDir(src)
+	fs, err := templateFS.ReadDir(src)
 	if err != nil {
 		return err
 	}
@@ -56,32 +54,31 @@ func scan(src, dst string) error {
 }
 
 func genDir(src, dst, path string) error {
-	if err := os.MkdirAll(filepath.Join(dst, path), 0777); err != nil {
+	dirSrc, dirDst := filepath.Join(src, path), filepath.Join(dst, path)
+	if err := os.MkdirAll(dirDst, 0777); err != nil {
 		return err
 	}
-	subDirSrc, subDirDst := filepath.Join(src, path), filepath.Join(dst, path)
-	if err := scan(subDirSrc, subDirDst); err != nil {
+	if err := scan(dirSrc, dirDst); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func genFile(src, dst, path string) error {
-	fileSrc := filepath.Join(src, path)
-	fileDst := filepath.Join(dst, path)
-	buf, err := templatefs.ReadFile(fileSrc)
+func genFile(src, dst, name string) error {
+	fs, fd := filepath.Join(src, name), filepath.Join(dst, name)
+	buf, err := templateFS.ReadFile(fs)
 	if err != nil {
 		return err
 	}
 
-	file, err := os.Create(fileDst)
+	f, err := os.Create(fd)
 	if err != nil {
 		return err
 	}
-	defer file.Close()
+	defer f.Close()
 
-	if _, err = file.Write(buf); err != nil {
+	if _, err = f.Write(buf); err != nil {
 		return err
 	}
 
