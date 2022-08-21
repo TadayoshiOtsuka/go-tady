@@ -2,9 +2,7 @@ package runner
 
 import (
 	"errors"
-	"fmt"
 
-	httpserver "github.com/TadayoshiOtsuka/go-tady/internal/create/http_server"
 	"github.com/TadayoshiOtsuka/go-tady/internal/generator"
 	"github.com/TadayoshiOtsuka/go-tady/pkg/config"
 	"github.com/manifoldco/promptui"
@@ -70,8 +68,8 @@ func selectTemplate() error {
 	p := promptui.Select{
 		Label: "Select a project type",
 		Items: []string{
-			"sandbox",
-			"http-server",
+			"Sandbox",
+			"HTTP Server",
 		},
 	}
 	_, res, err := p.Run()
@@ -80,16 +78,17 @@ func selectTemplate() error {
 	}
 
 	switch res {
-	case "sandbox":
+	case "Sandbox":
 		config.Config.TargetTemplate = "sandbox"
 		if err := generator.Create(); err != nil {
-			fmt.Println(err)
 			return err
 		}
 
-	case "http-server":
-		config.Config.TargetTemplate = "http-server"
-		httpserver.SelectServerTemplate()
+	case "HTTP Server":
+		config.Config.TargetTemplate = "http_server/rest/nethttp"
+		if err := generator.Create(); err != nil {
+			return err
+		}
 	}
 
 	return nil
