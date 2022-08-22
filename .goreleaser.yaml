@@ -9,7 +9,7 @@ builds:
     binary: go-tady
     ldflags:
       - -s -w
-      - -X github.com/TadayoshiOtsuka/go-tady/cmd.version={{.Version}}
+      - -X github.com/TadayoshiOtsuka/go-tady/internal/version.version={{.Version}}
     env:
       - CGO_ENABLED=0
 archives:

@@ -12,7 +12,7 @@ import (
 )
 
 type IGenerator interface {
-	Do(src string, config *config.ProjectConfig) error
+	Do(src string, conf *config.ProjectConfig) error
 }
 
 type Generator struct {
@@ -25,17 +25,17 @@ func NewGenerator(engine engine.IEngine) IGenerator {
 	}
 }
 
-func (g *Generator) Do(src string, config *config.ProjectConfig) error {
+func (g *Generator) Do(src string, conf *config.ProjectConfig) error {
 	now := time.Now()
-	projectName := config.Name
-	userName := config.UserName
-	packageName := fmt.Sprintf("github.com/%v/%v", userName, projectName)
-	if err := g.engine.Start(src, projectName, packageName); err != nil {
+	pjn := conf.Name
+	un := conf.UserName
+	pn := fmt.Sprintf("github.com/%v/%v", un, pjn)
+	if err := g.engine.Start(src, pjn, pn); err != nil {
 		return err
 	}
 	utils.PrintWithElapsed("Project Generate Done.", now)
 
-	if err := gomod.Setup(projectName); err != nil {
+	if err := gomod.Setup(pjn); err != nil {
 		return err
 	}
 	utils.PrintWithElapsed("Setup go mod Done.", now)

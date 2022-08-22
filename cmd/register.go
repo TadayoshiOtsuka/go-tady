@@ -1,8 +1,7 @@
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/TadayoshiOtsuka/go-tady/internal/register"
 	"github.com/spf13/cobra"
 )
 
@@ -12,7 +11,7 @@ var registerCmd = &cobra.Command{
 	Long:    `register`,
 	Aliases: []string{"r"},
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("register called")
+		register.Exec()
 	},
 }
 

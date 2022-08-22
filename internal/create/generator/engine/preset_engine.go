@@ -6,17 +6,13 @@ import (
 	"strings"
 	"syscall"
 
-	"embed"
+	assets "github.com/TadayoshiOtsuka/go-tady/assets"
 )
 
-type PresetEngine struct {
-	FS *embed.FS
-}
+type PresetEngine struct{}
 
-func NewPresetEngine(templateFS *embed.FS) IEngine {
-	return &PresetEngine{
-		FS: templateFS,
-	}
+func NewPresetEngine() IEngine {
+	return &PresetEngine{}
 }
 
 func (g *PresetEngine) Start(src, rootName, packageName string) error {
@@ -41,7 +37,7 @@ func (g *PresetEngine) makeRoot(name string) error {
 }
 
 func (g *PresetEngine) scan(src, dst, packageName string) error {
-	fs, err := g.FS.ReadDir(src)
+	fs, err := assets.Presets.ReadDir(src)
 	if err != nil {
 		return err
 	}
@@ -75,7 +71,7 @@ func (g *PresetEngine) genDir(src, dst, packageName, path string) error {
 
 func (g *PresetEngine) genFile(src, dst, packageName, name string) error {
 	fs, fd := filepath.Join(src, name), filepath.Join(dst, name)
-	file, err := g.FS.ReadFile(fs)
+	file, err := assets.Presets.ReadFile(fs)
 	if err != nil {
 		return err
 	}

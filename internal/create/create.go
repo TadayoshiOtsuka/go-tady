@@ -1,7 +1,6 @@
 package runner
 
 import (
-	"embed"
 	"errors"
 	"fmt"
 
@@ -11,44 +10,91 @@ import (
 	"github.com/manifoldco/promptui"
 )
 
-//go:embed all:presets
-var presetFS embed.FS
+var (
+	ErrEmptyProjectName  = errors.New("project name is must be not empty")
+	ErrEmptyUserName     = errors.New("user name is must be not empty")
+	ErrInvalidCreateType = errors.New("invalid create type")
+)
 
-func Start() error {
+type CreateType string
+
+const (
+	userPreset = CreateType("userPreset")
+	preset     = CreateType("preset")
+)
+
+func Exec() error {
 	if err := inputUserName(); err != nil {
 		return err
 	}
 	if err := inputProjectName(); err != nil {
 		return err
 	}
-	if t := selectTemplateType(); t == "user" {
-		if err := selectUserTemplate(); err != nil {
-			return err
-		}
-		e := engine.NewUserPresetEngine()
-		g := generator.NewGenerator(e)
-		// 設定ファイルから絶対パスを読み込み
-		src := fmt.Sprintf("%v%v", "presets/", config.Config.TargetTemplate)
-		if err := g.Do(src, config.Config); err != nil {
-			return err
-		}
-	} else {
-		if err := selectPresetTemplate(); err != nil {
-			return err
-		}
-		e := engine.NewPresetEngine(&presetFS)
-		g := generator.NewGenerator(e)
-		src := fmt.Sprintf("%v%v", "presets/", config.Config.TargetTemplate)
-		if err := g.Do(src, config.Config); err != nil {
-			return err
-		}
+	t, err := selectCreateType()
+	if err != nil {
+		return err
+	}
+	switch t {
+	case userPreset:
+		return genFromUserPreset()
+
+	case preset:
+		return genFromPreset()
+	default:
+		return ErrInvalidCreateType
+	}
+}
+
+func genFromUserPreset() error {
+	if err := selectUserTemplate(); err != nil {
+		return err
+	}
+	e := engine.NewUserPresetEngine()
+	g := generator.NewGenerator(e)
+	// 設定ファイルから絶対パスを読み込み
+	src := fmt.Sprintf("%v%v", "presets/", config.Config.TargetPreset)
+	if err := g.Do(src, config.Config); err != nil {
+		return err
 	}
 
 	return nil
 }
 
-func selectTemplateType() string {
-	return ""
+func genFromPreset() error {
+	if err := selectPresetTemplate(); err != nil {
+		return err
+	}
+	e := engine.NewPresetEngine()
+	g := generator.NewGenerator(e)
+	src := fmt.Sprintf("%v%v", "presets/", config.Config.TargetPreset)
+	if err := g.Do(src, config.Config); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func selectCreateType() (CreateType, error) {
+	p := promptui.Select{
+		Label: "select a create type",
+		Items: []string{
+			string(userPreset),
+			string(preset),
+		},
+	}
+	_, res, err := p.Run()
+	if err != nil {
+		return "", err
+	}
+
+	switch res {
+	case string(userPreset):
+		return userPreset, nil
+	case string(preset):
+		return preset, nil
+	default:
+		return "", nil
+	}
 }
 
 func selectUserTemplate() error {
@@ -57,10 +103,10 @@ func selectUserTemplate() error {
 
 func inputProjectName() error {
 	p := promptui.Prompt{
-		Label: "Project name",
+		Label: "project name",
 		Validate: func(in string) error {
 			if len(in) == 0 {
-				return errors.New("project name is must be not empty")
+				return ErrEmptyProjectName
 			}
 			return nil
 		},
@@ -78,20 +124,18 @@ func inputProjectName() error {
 
 func inputUserName() error {
 	p := promptui.Prompt{
-		Label: "Your Github user name",
+		Label: "your github user name",
 		Validate: func(in string) error {
 			if len(in) == 0 {
-				return errors.New("user name is must be not empty")
+				return ErrEmptyUserName
 			}
 			return nil
 		},
 	}
-
 	res, err := p.Run()
 	if err != nil {
 		return err
 	}
-
 	config.Config.UserName = res
 
 	return nil
@@ -99,10 +143,9 @@ func inputUserName() error {
 
 func selectPresetTemplate() error {
 	p := promptui.Select{
-		Label: "Select a project type",
+		Label: "select a preset",
 		Items: []string{
 			"Sandbox",
-			"HTTP Server",
 		},
 	}
 	_, res, err := p.Run()
@@ -112,10 +155,7 @@ func selectPresetTemplate() error {
 
 	switch res {
 	case "Sandbox":
-		config.Config.TargetTemplate = "sandbox"
-
-	case "HTTP Server":
-		config.Config.TargetTemplate = "http_server/rest/nethttp"
+		config.Config.TargetPreset = "sandbox"
 	}
 
 	return nil
