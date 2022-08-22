@@ -5,8 +5,12 @@ Copyright © 2022 TadayoshiOtsuka <ohtukayoshi.yoshi@gmail.com>
 package cmd
 
 import (
+	"errors"
+
 	c "github.com/TadayoshiOtsuka/go-tady/internal/create"
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var createCmd = &cobra.Command{
@@ -20,6 +24,10 @@ From default preset:
  => Create a project by selecting from the preset project under https://github.com/TadayoshiOtsuka/go-tady/tree/master/assets/presets
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {
+		err := viper.ReadInConfig()
+		if err != nil {
+			return errors.New(color.RedString("can not find config file. please run 'go-tady init'"))
+		}
 		return c.Exec()
 	},
 }
