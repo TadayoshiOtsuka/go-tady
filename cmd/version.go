@@ -1,9 +1,7 @@
 package cmd
 
 import (
-	"fmt"
-	"runtime/debug"
-
+	"github.com/TadayoshiOtsuka/go-tady/internal/version"
 	"github.com/spf13/cobra"
 )
 
@@ -13,23 +11,10 @@ var versionCmd = &cobra.Command{
 	Long:    `version`,
 	Aliases: []string{"v"},
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("go-tady version %s\n", getVersion())
+		version.Exec()
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(versionCmd)
-}
-
-var version = ""
-
-func getVersion() string {
-	if version != "" {
-		return version
-	}
-	i, ok := debug.ReadBuildInfo()
-	if !ok {
-		return "unknown"
-	}
-	return i.Main.Version
 }

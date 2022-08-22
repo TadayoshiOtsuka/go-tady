@@ -15,7 +15,7 @@ var createCmd = &cobra.Command{
 	Short:   "create template",
 	Long:    "create template",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return c.Start()
+		return c.Exec()
 	},
 }
 
