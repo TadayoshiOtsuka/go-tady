@@ -33,13 +33,13 @@ func (g *Generator) Do(src string, conf *config.ProjectConfig) error {
 	if err := g.engine.Start(src, pjn, pn); err != nil {
 		return err
 	}
-	utils.PrintWithElapsed("Project Generate Done.", now)
+	utils.PrintWithElapsedMilliSec("Project Generate Done.", now)
 
 	if err := gomod.Setup(pjn); err != nil {
 		return err
 	}
-	utils.PrintWithElapsed("Setup go mod Done.", now)
-	utils.PrintWithElapsed(color.GreenString("Success🎉"), now)
+	utils.PrintWithElapsedMilliSec("Setup go mod Done.", now)
+	utils.PrintWithElapsedMilliSec(color.GreenString("Success🎉"), now)
 
 	return nil
 }

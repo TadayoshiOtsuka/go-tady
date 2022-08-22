@@ -7,9 +7,8 @@ import (
 
 var versionCmd = &cobra.Command{
 	Use:     "version",
-	Short:   "version",
-	Long:    `version`,
 	Aliases: []string{"v"},
+	Short:   "Show go-tady version info.",
 	Run: func(cmd *cobra.Command, args []string) {
 		version.Exec()
 	},

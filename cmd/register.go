@@ -7,9 +7,8 @@ import (
 
 var registerCmd = &cobra.Command{
 	Use:     "register",
-	Short:   "register",
-	Long:    `register`,
 	Aliases: []string{"r"},
+	Short:   "Register the current directory as your Preset",
 	Run: func(cmd *cobra.Command, args []string) {
 		register.Exec()
 	},
