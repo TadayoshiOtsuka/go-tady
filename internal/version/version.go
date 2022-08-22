@@ -1,14 +1,15 @@
 package version
 
 import (
-	"fmt"
 	"runtime/debug"
+
+	"github.com/TadayoshiOtsuka/go-tady/pkg/utils"
 )
 
 var version = ""
 
 func Exec() {
-	fmt.Printf("go-tady version %s\n", getBuildVersion())
+	utils.PrintGoTady(getBuildVersion())
 }
 
 func getBuildVersion() string {
