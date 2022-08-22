@@ -1,8 +1,10 @@
 package register
 
 import (
+	"fmt"
 	"os"
 
+	"github.com/fatih/color"
 	"github.com/spf13/viper"
 )
 
@@ -10,6 +12,7 @@ func Exec(presetName string) error {
 	if err := registerNewPreset(presetName); err != nil {
 		return err
 	}
+	fmt.Print(color.GreenString("Success\n"))
 
 	return nil
 }

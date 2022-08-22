@@ -27,9 +27,6 @@ const (
 )
 
 func Exec() error {
-	if err := inputUserName(); err != nil {
-		return err
-	}
 	if err := inputProjectName(); err != nil {
 		return err
 	}
@@ -143,25 +140,6 @@ func inputProjectName() error {
 	}
 
 	config.Config.Name = res
-
-	return nil
-}
-
-func inputUserName() error {
-	p := promptui.Prompt{
-		Label: "your github user name",
-		Validate: func(in string) error {
-			if len(in) == 0 {
-				return ErrEmptyUserName
-			}
-			return nil
-		},
-	}
-	res, err := p.Run()
-	if err != nil {
-		return err
-	}
-	config.Config.UserName = res
 
 	return nil
 }

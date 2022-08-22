@@ -1,0 +1,3 @@
+module GO_TADY_PACKAGE_NAME
+
+go 1.18

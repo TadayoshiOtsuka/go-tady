@@ -9,6 +9,7 @@ import (
 	"github.com/TadayoshiOtsuka/go-tady/pkg/gomod"
 	"github.com/TadayoshiOtsuka/go-tady/pkg/utils"
 	"github.com/fatih/color"
+	"github.com/spf13/viper"
 )
 
 type IGenerator interface {
@@ -28,7 +29,7 @@ func NewGenerator(engine engine.IEngine) IGenerator {
 func (g *Generator) Do(src string, conf *config.ProjectConfig) error {
 	now := time.Now()
 	pjn := conf.Name
-	un := conf.UserName
+	un := viper.GetString("username")
 	pn := fmt.Sprintf("github.com/%v/%v", un, pjn)
 	utils.PrintWithStartPrefix("Generate new project")
 	if err := g.engine.Start(src, pjn, pn); err != nil {
