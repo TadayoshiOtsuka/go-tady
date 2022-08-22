@@ -2,13 +2,13 @@
 
 A project template generator for Go
 
-Eliminate tedious re-creation of Go projects.  
-When starting a new project or building a learning codebase.
+Eliminate manual re-creation of similar codes for Go  
+When starting a new project, building a learning codebase, etc...
 
-By registering your favorite codebase with go-tady  
+By registering your favorite codebase with `go-tady`  
 You can use it as a new project with a single command at any time.
 
-For simple projects, you can also use any of the default projects under /assets/presets.
+For simple projects, you can also use any of the default projects under `/assets/presets`.
 
 # Install
 
