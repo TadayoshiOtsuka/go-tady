@@ -1,22 +1,30 @@
 package engine
 
 import (
+	"bufio"
+	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 	"syscall"
+
+	"github.com/TadayoshiOtsuka/go-tady/pkg/config"
 )
 
 type UserPresetEngine struct{}
 
 func NewUserPresetEngine() IEngine {
-	return &PresetEngine{}
+	return &UserPresetEngine{}
 }
 
 func (g *UserPresetEngine) Start(src, rootName, packageName string) error {
 	umask := syscall.Umask(0)
 	defer syscall.Umask(umask)
 	if err := g.makeRoot(rootName); err != nil {
+		return err
+	}
+	if err := g.readOldPackageName(src); err != nil {
 		return err
 	}
 	if err := g.scan(src, rootName, packageName); err != nil {
@@ -34,6 +42,24 @@ func (g *UserPresetEngine) makeRoot(name string) error {
 	return nil
 }
 
+func (g *UserPresetEngine) readOldPackageName(src string) error {
+	fp, err := os.Open(fmt.Sprintf("%v/go.mod", src))
+	if err != nil {
+		return err
+	}
+	defer fp.Close()
+
+	s := bufio.NewScanner(fp)
+	s.Scan()
+	c := s.Text()
+	if !strings.Contains(c, "module") {
+		return errors.New("cannot find module definition")
+	}
+	config.Config.OldPackageName = c[7:]
+
+	return nil
+}
+
 func (g *UserPresetEngine) scan(src, dst, packageName string) error {
 	fs, err := os.ReadDir(src)
 	if err != nil {
@@ -42,6 +68,9 @@ func (g *UserPresetEngine) scan(src, dst, packageName string) error {
 
 	for _, f := range fs {
 		if f.IsDir() {
+			if f.Name() == ".git" {
+				continue
+			}
 			if err := g.genDir(src, dst, packageName, f.Name()); err != nil {
 				return err
 			}
@@ -90,6 +119,6 @@ func (g *UserPresetEngine) genFile(src, dst, packageName, name string) error {
 
 func (g *UserPresetEngine) replacePackageName(file []byte, packageName string) []byte {
 	c := string(file)
-	c = strings.ReplaceAll(c, "GO_TADY_PACKAGE_NAME", packageName)
+	c = strings.ReplaceAll(c, config.Config.OldPackageName, packageName)
 	return []byte(c)
 }

@@ -10,6 +10,7 @@ import (
 	"github.com/TadayoshiOtsuka/go-tady/pkg/config"
 	"github.com/fatih/color"
 	"github.com/manifoldco/promptui"
+	"github.com/spf13/viper"
 )
 
 var (
@@ -42,19 +43,19 @@ func Exec() error {
 
 	case preset:
 		return genFromPreset()
+
 	default:
 		return ErrInvalidCreateType
 	}
 }
 
 func genFromUserPreset() error {
-	if err := selectUserTemplate(); err != nil {
+	if err := selectUserTemplate(viper.GetStringMapString("presets")); err != nil {
 		return err
 	}
 	e := engine.NewUserPresetEngine()
 	g := generator.NewGenerator(e)
-	// 設定ファイルから絶対パスを読み込み
-	src := fmt.Sprintf("%v%v", "presets/", config.Config.TargetPreset)
+	src := config.Config.TargetPreset
 	if err := g.Do(src, config.Config); err != nil {
 		return err
 	}
@@ -99,7 +100,26 @@ func selectCreateType() (CreateType, error) {
 	}
 }
 
-func selectUserTemplate() error {
+func selectUserTemplate(presets map[string]string) error {
+	var items []string
+	for k := range presets {
+		items = append(items, k)
+	}
+	p := promptui.Select{
+		Label: "select a your preset",
+		Items: items,
+	}
+	_, res, err := p.Run()
+	if err != nil {
+		return err
+	}
+
+	for k, v := range presets {
+		if k == res {
+			config.Config.TargetPreset = v
+		}
+	}
+
 	return nil
 }
 

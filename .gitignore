@@ -36,3 +36,6 @@ cover_file*
 __debug_bin
 go-tady
 main
+
+# settings
+.go-tady.toml
