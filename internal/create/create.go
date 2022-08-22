@@ -3,10 +3,12 @@ package runner
 import (
 	"errors"
 	"fmt"
+	"os"
 
 	"github.com/TadayoshiOtsuka/go-tady/internal/create/generator"
 	"github.com/TadayoshiOtsuka/go-tady/internal/create/generator/engine"
 	"github.com/TadayoshiOtsuka/go-tady/pkg/config"
+	"github.com/fatih/color"
 	"github.com/manifoldco/promptui"
 )
 
@@ -116,6 +118,9 @@ func inputProjectName() error {
 	if err != nil {
 		return err
 	}
+	if isDirExists(res) {
+		return fmt.Errorf(color.RedString("'%v' is already exists. should be use unique name in current directory"), res)
+	}
 
 	config.Config.Name = res
 
@@ -159,4 +164,16 @@ func selectPresetTemplate() error {
 	}
 
 	return nil
+}
+
+func isDirExists(projectName string) bool {
+	fs, err := os.Stat(projectName)
+	if err != nil {
+		return false
+	}
+	if !fs.IsDir() {
+		return false
+	}
+
+	return true
 }

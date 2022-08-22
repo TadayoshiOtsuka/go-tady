@@ -30,16 +30,18 @@ func (g *Generator) Do(src string, conf *config.ProjectConfig) error {
 	pjn := conf.Name
 	un := conf.UserName
 	pn := fmt.Sprintf("github.com/%v/%v", un, pjn)
+	utils.PrintWithStartPrefix("Generate new project")
 	if err := g.engine.Start(src, pjn, pn); err != nil {
 		return err
 	}
-	utils.PrintWithElapsedMilliSec("Project Generate Done.", now)
+	utils.PrintDoneWithElapsedMillSec(now)
 
+	utils.PrintWithStartPrefix("Exec command 'go mod tidy'")
 	if err := gomod.Setup(pjn); err != nil {
 		return err
 	}
-	utils.PrintWithElapsedMilliSec("Setup go mod Done.", now)
-	utils.PrintWithElapsedMilliSec(color.GreenString("Success🎉"), now)
+	utils.PrintDoneWithElapsedMillSec(now)
+	utils.PrintWithElapsedMilliSec(color.GreenString("Successfully generated🎉 "), now)
 
 	return nil
 }

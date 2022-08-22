@@ -33,14 +33,13 @@ var cfgFile string
 
 var rootCmd = &cobra.Command{
 	Use:   "go-tady",
-	Short: "go-tady",
-	Long:  `go-tady`,
+	Short: "A project template generator for Go",
+	Long:  `A project template generator for Go`,
 }
 
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
-		fmt.Println(err)
 		os.Exit(1)
 	}
 }

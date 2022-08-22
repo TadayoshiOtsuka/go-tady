@@ -3,7 +3,17 @@ package utils
 import (
 	"fmt"
 	"time"
+
+	"github.com/fatih/color"
 )
+
+func PrintWithStartPrefix(text string) {
+	fmt.Printf("[%s] %s\n", color.YellowString("START"), text)
+}
+
+func PrintDoneWithElapsedMillSec(now time.Time) {
+	fmt.Printf("[%s] in %d[ms]\n", color.GreenString("DONE"), time.Since(now).Milliseconds())
+}
 
 func PrintWithElapsedMilliSec(text string, now time.Time) {
 	fmt.Printf("%s in %d[ms]\n", text, time.Since(now).Milliseconds())

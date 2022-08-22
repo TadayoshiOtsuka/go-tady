@@ -10,10 +10,10 @@ You can use it as a new project with a single command at any time.
 
 For simple projects, you can also use any of the default projects under /assets/presets.
 
-## Install
+# Install
 
 `go install github.com/TadayoshiOtsuka/go-tady@latest`
 
-## Usage
+# Usage
 
 Todo
