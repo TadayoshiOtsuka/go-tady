@@ -10,7 +10,7 @@ import (
 var registerCmd = &cobra.Command{
 	Use:          "register",
 	Aliases:      []string{"r"},
-	Short:        "Register the current directory to your Preset",
+	Short:        "Register the current directory to your preset",
 	SilenceUsage: true,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		err := viper.ReadInConfig()

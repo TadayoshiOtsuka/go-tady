@@ -8,8 +8,8 @@ import (
 var listCmd = &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"l"},
-	Short:   "show your presets",
-	Long:    `show your presets`,
+	Short:   "Show your presets",
+	Long:    `Show your presets`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return list.Exec()
 	},
