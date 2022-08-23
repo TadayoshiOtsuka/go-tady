@@ -1,22 +1,15 @@
 package runner
 
 import (
-	"errors"
 	"fmt"
 	"os"
 
 	"github.com/TadayoshiOtsuka/go-tady/internal/create/generator"
 	"github.com/TadayoshiOtsuka/go-tady/internal/create/generator/engine"
 	"github.com/TadayoshiOtsuka/go-tady/pkg/config"
-	"github.com/fatih/color"
+	"github.com/TadayoshiOtsuka/go-tady/pkg/errs"
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/viper"
-)
-
-var (
-	ErrEmptyProjectName  = errors.New("project name is must be not empty")
-	ErrEmptyUserName     = errors.New("user name is must be not empty")
-	ErrInvalidCreateType = errors.New("invalid create type")
 )
 
 type CreateType string
@@ -26,8 +19,8 @@ const (
 	preset     = CreateType("preset")
 )
 
-func Exec() error {
-	if err := inputProjectName(); err != nil {
+func Exec(args []string) error {
+	if err := setProjectName(args); err != nil {
 		return err
 	}
 	t, err := selectCreateType()
@@ -42,7 +35,7 @@ func Exec() error {
 		return genFromPreset()
 
 	default:
-		return ErrInvalidCreateType
+		return errs.ErrInvalidCreateType
 	}
 }
 
@@ -120,26 +113,17 @@ func selectUserTemplate(presets map[string]string) error {
 	return nil
 }
 
-func inputProjectName() error {
-	p := promptui.Prompt{
-		Label: "project name",
-		Validate: func(in string) error {
-			if len(in) == 0 {
-				return ErrEmptyProjectName
-			}
-			return nil
-		},
+func setProjectName(args []string) error {
+	if len(args) == 0 {
+		return errs.ErrEmptyProjectName
 	}
 
-	res, err := p.Run()
-	if err != nil {
-		return err
-	}
-	if isDirExists(res) {
-		return fmt.Errorf(color.RedString("'%v' is already exists. should be use unique name in current directory"), res)
+	pn := args[0]
+	if isDirExists(pn) {
+		return errs.ErrDirIsAlreadyExists(pn)
 	}
 
-	config.Config.Name = res
+	config.Config.Name = pn
 
 	return nil
 }

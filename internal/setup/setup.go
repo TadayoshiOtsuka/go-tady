@@ -1,17 +1,13 @@
 package setup
 
 import (
-	"errors"
 	"fmt"
 	"os"
 
+	"github.com/TadayoshiOtsuka/go-tady/pkg/errs"
 	"github.com/fatih/color"
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/viper"
-)
-
-var (
-	ErrEmptyUserName = errors.New("user name is must be not empty")
 )
 
 func Exec() error {
@@ -42,7 +38,7 @@ func inputUserName() (string, error) {
 		Label: "your github user name",
 		Validate: func(in string) error {
 			if len(in) == 0 {
-				return ErrEmptyUserName
+				return errs.ErrEmptyUserName
 			}
 			return nil
 		},

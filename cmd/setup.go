@@ -6,8 +6,9 @@ import (
 )
 
 var initCmd = &cobra.Command{
-	Use:   "init",
-	Short: "initialize .go-tady.toml",
+	Use:          "init",
+	Short:        "initialize .go-tady.toml",
+	SilenceUsage: true,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return setup.Exec()
 	},

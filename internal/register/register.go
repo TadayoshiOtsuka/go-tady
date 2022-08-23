@@ -4,12 +4,18 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/TadayoshiOtsuka/go-tady/pkg/errs"
 	"github.com/fatih/color"
 	"github.com/spf13/viper"
 )
 
-func Exec(presetName string) error {
-	if err := registerNewPreset(presetName); err != nil {
+func Exec(args []string) error {
+	if len(args) == 0 {
+		return errs.ErrNotEnoughRegisterArgs
+	}
+
+	pn := args[0]
+	if err := registerNewPreset(pn); err != nil {
 		return err
 	}
 	fmt.Print(color.GreenString("Success\n"))
