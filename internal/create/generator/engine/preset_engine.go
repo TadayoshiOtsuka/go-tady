@@ -29,7 +29,7 @@ func (g *PresetEngine) Start(src, rootName, packageName string) error {
 }
 
 func (g *PresetEngine) makeRoot(name string) error {
-	if err := os.MkdirAll(name, 0777); err != nil {
+	if err := os.MkdirAll(name, 0700); err != nil {
 		return err
 	}
 
@@ -59,7 +59,7 @@ func (g *PresetEngine) scan(src, dst, packageName string) error {
 
 func (g *PresetEngine) genDir(src, dst, packageName, path string) error {
 	dirSrc, dirDst := filepath.Join(src, path), filepath.Join(dst, path)
-	if err := os.MkdirAll(dirDst, 0777); err != nil {
+	if err := os.MkdirAll(dirDst, 0700); err != nil {
 		return err
 	}
 	if err := g.scan(dirSrc, dirDst, packageName); err != nil {
