@@ -15,8 +15,8 @@ import (
 type CreateType string
 
 const (
-	userPreset = CreateType("userPreset")
-	preset     = CreateType("preset")
+	userPreset    = CreateType("preset")
+	defaultPreset = CreateType("default")
 )
 
 func Exec(args []string) error {
@@ -31,7 +31,7 @@ func Exec(args []string) error {
 	case userPreset:
 		return genFromUserPreset()
 
-	case preset:
+	case defaultPreset:
 		return genFromPreset()
 
 	default:
@@ -72,7 +72,7 @@ func selectCreateType() (CreateType, error) {
 		Label: "select a create type",
 		Items: []string{
 			string(userPreset),
-			string(preset),
+			string(defaultPreset),
 		},
 	}
 	_, res, err := p.Run()
@@ -83,8 +83,8 @@ func selectCreateType() (CreateType, error) {
 	switch res {
 	case string(userPreset):
 		return userPreset, nil
-	case string(preset):
-		return preset, nil
+	case string(defaultPreset):
+		return defaultPreset, nil
 	default:
 		return "", nil
 	}
